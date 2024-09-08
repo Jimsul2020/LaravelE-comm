@@ -40,6 +40,7 @@ class CategoryController extends Controller
             $data->name = $request->name;
             $data->slug = $request->slug;
             $data->status = $request->status;
+            $data->showHome = $request->showHome;
             $data->save();
             //save image here
             if (!empty($request->image_id)) {
@@ -100,11 +101,13 @@ class CategoryController extends Controller
         ]);
 
         if ($validator->passes()) {
-            $data = new Category();
-            $data->name = $request->name;
-            $data->slug = $request->slug;
-            $data->status = $request->status;
-            $data->save();
+            // $data = new Category();
+            $category->name = $request->name;
+            $category->slug = $request->slug;
+            $category->status = $request->status;
+            $category->showHome = $request->showHome;
+
+            $oldImage = $category->image;
 
             $oldImage = $category->image;
             //save image here
@@ -113,7 +116,7 @@ class CategoryController extends Controller
                 $extArray = explode('.', $tempImage->name);
                 $ext = last($extArray);
 
-                $newImageName = $data->id . '-' . time() . '.' . $ext;
+                $newImageName = $category->id . '-' . time() . '.' . $ext;
                 $sPath = public_path() . '/temp/' . $tempImage->name;
                 $dPath = public_path() . '/uploads/category/' . $newImageName;
                 File::copy($sPath, $dPath);
@@ -126,13 +129,13 @@ class CategoryController extends Controller
                 $img->save($dPath);
 
 
-                $data->image = $newImageName;
-                $data->save();
+                $category->image = $newImageName;
 
                 //Delete old image
                 File::delete(public_path() . '/uploads/category/thumb/' . $oldImage);
                 File::delete(public_path() . '/uploads/category/' . $oldImage);
             }
+            $category->save();
             return response()->json([
                 'status' => true,
                 'message' => 'Category updated successfully'

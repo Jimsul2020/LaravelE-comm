@@ -98,7 +98,7 @@
 @endsection
 @section('customJs')
 <script>
-			function deleteCategory(id){
+function deleteCategory(id){
 		var url = '{{route("destroy.category", "ID")}}';
 		var newUrl = url.replace("ID", id);
 if(confirm("Are you sure you want to delete this record?")){

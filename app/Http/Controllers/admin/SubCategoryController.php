@@ -39,7 +39,7 @@ class SubCategoryController extends Controller
             'name' => 'required|string',
             'slug' => 'required|string|unique:sub_categories',
             'category_id' => 'required|integer',
-            'status' => 'required|integer',
+            // 'status' => 'required|integer',
         ]);
 
         if ($validator->passes()) {
@@ -48,6 +48,7 @@ class SubCategoryController extends Controller
             $data->slug = $request->slug;
             $data->category_id = $request->category_id;
             $data->status = $request->status;
+            $data->showHome = $request->showHome;
             $data->save();
             return response()->json([
                 'status' => true,
@@ -96,6 +97,7 @@ class SubCategoryController extends Controller
             $subcategory->slug = $request->slug;
             $subcategory->category_id = $request->category_id;
             $subcategory->status = $request->status;
+            $subcategory->showHome = $request->showHome;
             $subcategory->save();
             return response()->json([
                 'status' => true,
