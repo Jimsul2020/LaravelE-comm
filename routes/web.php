@@ -16,6 +16,7 @@ use App\Http\Controllers\admin\ShippingController;
 use App\Http\Controllers\admin\AdminLoginController;
 use App\Http\Controllers\admin\SubCategoryController;
 use App\Http\Controllers\admin\DiscountCodeController;
+use App\Http\Controllers\admin\OrderController;
 use App\Http\Controllers\admin\ProductImageController;
 use App\Http\Controllers\ProductSubCategoryController;
 use App\Http\Controllers\admin\TemplateImagesController;
@@ -31,8 +32,9 @@ use App\Http\Controllers\admin\TemplateImagesController;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
+// Route::get('/test', function () {
+//     // return view('welcome');
+//     return orderEmail(2);
 // });
 
 
@@ -63,6 +65,8 @@ Route::group( ['prefix' => 'account'],function () {
  
  Route::group(['middleware' => 'auth'], function () {
   Route::get('/profile', [AuthController::class, 'profile'])->name('account.profile');
+  Route::get('/my-orders', [AuthController::class, 'myOrders'])->name('account.orders');
+  Route::get('/order-details/{orderId}', [AuthController::class, 'orderDetails'])->name('account.orderDetails');
   Route::get('/logout', [AuthController::class, 'logout'])->name('account.logout');
   Route::get('/lga-by-state', [CartController::class, 'lgaByState'])->name('lga.state');
 
@@ -144,4 +148,13 @@ Route::group(['prefix' => 'admin'], function () {
  Route::put('/coupon/update/{id}', [DiscountCodeController::class, 'update'])->name('update.coupon');
  Route::delete('/coupon/delete/{id}', [DiscountCodeController::class, 'destroy'])->name('destroy.coupon');
  Route::post('/coupon/store', [DiscountCodeController::class, 'store'])->name('coupon.store');
+
+ //Routes for Orders
+ Route::get('orders',[OrderController::class,'index'])->name('orders.index');
+ Route::get('orders/{id}',[OrderController::class,'detail'])->name('orders.detail');
+ Route::post('order/change-status{id}',[OrderController::class,'changeOrderStatus'])->name('orders.changeOrderStatus');
+ 
+ //sendinvoiceemail
+ Route::post('order/send-email{id}',[OrderController::class,'sendInvoiceEmail'])->name('orders.sendInvoiceEmail');
+
 });

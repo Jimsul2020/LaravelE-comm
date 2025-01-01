@@ -137,7 +137,7 @@ class CartController extends Controller
     public function checkout(Request $request)
     {
         $discount = 0;
-        
+
         if (Cart::count() == 0) {
             return redirect()->route('front.cart');
         }
@@ -188,7 +188,7 @@ class CartController extends Controller
             $grandTotal = ($subTotal - $discount) + $totalShippingCharge;
         } else {
             $totalShippingCharge = 0;
-            $grandTotal = ($subTotal-$discount);
+            $grandTotal = ($subTotal - $discount);
         }
 
         return view('front.checkout', [
@@ -206,7 +206,7 @@ class CartController extends Controller
     {
         if (!empty($request->state_id)) {
             $lgas = LGA::where('state_id', $request->state_id)
-                ->orderBy('name', 'ASC')
+                ->orderBy('lga', 'ASC')
                 ->get();
 
             return response()->json([
@@ -274,8 +274,8 @@ class CartController extends Controller
         $discount = 0;
         $subTotal = Cart::subtotal(2, '.', '');
         $grandTotal = 0;
-        $discountCodeId ='';
-        $promoCode ='';
+        $discountCodeId = null;
+        $promoCode = null;
 
         if (session()->has('code')) {
             $code = session()->get('code');
@@ -307,8 +307,10 @@ class CartController extends Controller
         $order = new Order;
         $order->subtotal = $subTotal;
         $order->discount = $discount;
-        $order->coupon_code_id = $discountCodeId;
+        $order->coupon_code_id = $discountCodeId ?: null;
         $order->coupon_code = $promoCode;
+        $order->payment_status = 'not paid';
+        $order->status = 'pending';
         $order->shipping = $shipping;
         $order->grand_total = $grandTotal;
         $order->user_id = $user->id;
@@ -339,6 +341,9 @@ class CartController extends Controller
 
             $orderItem->save();
         }
+
+        //sendmail
+        orderEmail($order->id, 'customer');
 
         session()->flash('success', 'You have successfully placed your order');
         Cart::destroy();
@@ -388,7 +393,7 @@ class CartController extends Controller
 
             if ($shippingCharge != null) {
                 $totalShippingCharge = $totalQty * $shippingCharge->amount;
-                $grandTotal = ($subTotal-$discount) + $totalShippingCharge;
+                $grandTotal = ($subTotal - $discount) + $totalShippingCharge;
 
                 return response()->json([
                     'status' => true,
@@ -474,9 +479,9 @@ class CartController extends Controller
 
         $now = Carbon::now('UTC');
         // echo "Current time: " . $now->format('Y-m-d H:i:s') . "\n";
-        
-        
-        
+
+
+
         // Validate start date if set
         if (!empty($code->start_at)) {
             $startDate = Carbon::createFromFormat('Y-m-d H:i:s', $code->start_at, 'UTC');
@@ -501,6 +506,39 @@ class CartController extends Controller
             }
         }
 
+        //max uses check
+        if ($code->max_uses > 0) {
+            $couponUsed = Order::where('coupon_cod_id', $code->id)->count();
+
+            if ($couponUsed >= $code->max_uses) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid discount coupon',
+                ]);
+            }
+        }
+        //max uses user check
+        if ($code->max_uses_user > 0) {
+            $couponUsedByUser = Order::where(['coupon_cod_id' => $code->id, 'user_id' => Auth::user()->id])->count();
+
+            if ($couponUsedByUser >= $code->max_uses_user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'coupon code already used by you.',
+                ]);
+            }
+        }
+        $subTotal = (float) Cart::subtotal(2, '.', '');
+
+        if($code->min_amount > 0){
+            if($subTotal < $code->min_amount){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'You min amount must be $'.$code->min_amount.'.',
+                ]);
+            }
+        }
+
         // Store the coupon in the session
         session()->put('code', $code);
 
@@ -508,10 +546,9 @@ class CartController extends Controller
     }
 
     //remove coupon
-    public function removeCoupon(Request $request){
+    public function removeCoupon(Request $request)
+    {
         session()->forget('code');
         return $this->orderSummary($request);
-
     }
-
 }

@@ -50,12 +50,13 @@
                                     <div class="mb-3">
                                         <select name="country_id" id="country_id" class="form-control">
                                          <option value="">Select a country</option>
-                                            @if ($countries->isNotEmpty())
+                                         <option {{(!empty($customerAddress) && $customerAddress->country_id == 1) ? 'selected' : ''}} value="1">Nigeria</option>
+                                            <!-- @if ($countries->isNotEmpty())
                                              @foreach($countries as $country)
                                                <option {{(!empty($customerAddress) && $customerAddress->country_id == $country->id) ? 'selected' : ''}} value="{{$country->id}}">{{$country->name}}</option>
                                             <p></p>
                                              @endforeach
-                                            @endif
+                                            @endif -->
                                         </select>
                                     </div>            
                                 </div>
@@ -215,7 +216,7 @@ $(document).ready(function(){
                 $("#lga_id").find("option").not(":first").remove(); // Clear existing options except for the first one
                 if(response.status) {
                     $.each(response.lgas, function(key, item) {
-                        $("#lga_id").append(`<option value='${item.id}' ${selectedLgaId == item.id ? 'selected' : ''}>${item.name}</option>`);
+                        $("#lga_id").append(`<option value='${item.id}' ${selectedLgaId == item.id ? 'selected' : ''}>${item.lga}</option>`);
                     });
                 } else {
                     console.log('No LGAs found for the selected state');
@@ -373,6 +374,8 @@ $('#apply_discount').click(function(){
                 $('#grandTotal').html(response.grandTotal);
                 $('#shippingAmount').html(response.totalShippingCharge);
                 $('#discount-row-wrapper').html(response.discountString);
+            }else{
+                $('#discount-row-wrapper').html("<span class='text-danger'>"+response.message+"</span>");
             }
         }
     });
