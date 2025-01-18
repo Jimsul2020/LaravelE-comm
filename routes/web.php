@@ -47,6 +47,10 @@ Route::get('/thanks/{orderId}', [CartController::class, 'thankyou'])->name('fron
 Route::get('/checkout', [CartController::class, 'checkout'])->name('front.checkout');
 Route::get('/product/{slug}',[ShopController::class,'product'])->name('front.product');
 Route::get('/page/{slug}',[FrontController::class,'page'])->name('front.page');
+Route::get('/forgot-password',[AuthController::class,'forgotPasswordShow'])->name('front.forgotPasswordShow');
+Route::get('/reset-password/{token}',[AuthController::class,'resetPassword'])->name('front.resetPassword');
+Route::post('/reset-password/{token}',[AuthController::class,'processResetPassword'])->name('front.processResetPassword');
+Route::post('/process-forgot-password',[AuthController::class,'processForgotPassword'])->name('front.processForgotPassword');
 Route::get('/cart', [CartController::class, 'cart'])->name('front.cart');
 Route::post('/add-to-Cart', [CartController::class, 'addToCart'])->name('front.addToCart');
 Route::post('/add-to-wishlist', [FrontController::class, 'addToWishList'])->name('front.addToWishList');
