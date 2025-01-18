@@ -4,6 +4,7 @@ use App\Mail\OrderEmail;
 use App\Models\Category;
 use App\Models\LGA;
 use App\Models\Order;
+use App\Models\Page;
 use App\Models\ProductImage;
 use App\Models\State;
 use Illuminate\Support\Facades\Mail;
@@ -53,4 +54,9 @@ function getStateInfo($id){
 }
 function getLgaInfo($id){
   return LGA::where('id', $id)->first();
+}
+
+function staticPages(){
+  $pages = Page::orderBy('name', 'ASC')->get();
+  return $pages;
 }

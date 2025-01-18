@@ -17,9 +17,11 @@ use App\Http\Controllers\admin\AdminLoginController;
 use App\Http\Controllers\admin\SubCategoryController;
 use App\Http\Controllers\admin\DiscountCodeController;
 use App\Http\Controllers\admin\OrderController;
+use App\Http\Controllers\admin\PageController;
 use App\Http\Controllers\admin\ProductImageController;
 use App\Http\Controllers\ProductSubCategoryController;
 use App\Http\Controllers\admin\TemplateImagesController;
+use App\Http\Controllers\admin\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,8 +45,10 @@ Route::get('/shop/{categorySlug?}/{subCategorySlug?}',[ShopController::class,'in
 Route::get('/thanks/{orderId}', [CartController::class, 'thankyou'])->name('front.thankyou');
 Route::get('/checkout', [CartController::class, 'checkout'])->name('front.checkout');
 Route::get('/product/{slug}',[ShopController::class,'product'])->name('front.product');
+Route::get('/page/{slug}',[FrontController::class,'page'])->name('front.page');
 Route::get('/cart', [CartController::class, 'cart'])->name('front.cart');
 Route::post('/add-to-Cart', [CartController::class, 'addToCart'])->name('front.addToCart');
+Route::post('/add-to-wishlist', [FrontController::class, 'addToWishList'])->name('front.addToWishList');
 Route::post('/update-Cart', [CartController::class, 'updateCart'])->name('front.updateCart');
 Route::post('/delete-Cart', [CartController::class, 'deleteItem'])->name('front.deleteItem.cart');
 Route::post('/process-checkout', [CartController::class, 'processCheckout'])->name('front.processCheckout');
@@ -65,6 +69,12 @@ Route::group( ['prefix' => 'account'],function () {
  
  Route::group(['middleware' => 'auth'], function () {
   Route::get('/profile', [AuthController::class, 'profile'])->name('account.profile');
+  Route::post('/update-profile', [AuthController::class, 'updateProfile'])->name('account.updateProfile');
+  Route::post('/update-customer-address', [AuthController::class, 'updateAddress'])->name('account.updateAddress');
+  Route::post('/update-password', [AuthController::class, 'updatePassword'])->name('account.updatePassword');
+  Route::get('/change-password', [AuthController::class, 'changePassword'])->name('account.changePassword');
+  Route::get('/my-wishlist', [AuthController::class, 'wishlist'])->name('account.wishlist');
+  Route::post('/remove-product-from-wishlist', [AuthController::class, 'removeProductFromWishList'])->name('account.removeProductFromWishList');
   Route::get('/my-orders', [AuthController::class, 'myOrders'])->name('account.orders');
   Route::get('/order-details/{orderId}', [AuthController::class, 'orderDetails'])->name('account.orderDetails');
   Route::get('/logout', [AuthController::class, 'logout'])->name('account.logout');
@@ -120,6 +130,22 @@ Route::group(['prefix' => 'admin'], function () {
   Route::put('/brands/update{id}', [BrandController::class, 'update'])->name('update.brand');
   Route::delete('/brands/delete{id}', [BrandController::class, 'destroy'])->name('destroy.brand');
 
+
+  //routes for users
+  Route::get('/users', [UserController::class, 'index'])->name('users.index');
+  Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+  Route::post('/users/store', [UserController::class, 'store'])->name('store.users');
+  Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('edit.users');
+  Route::put('/users/{user}', [UserController::class, 'update'])->name('update.users');
+  Route::delete('/users/{user}', [BrandController::class, 'destroy'])->name('destroy.users');
+
+    //routes for pages
+    Route::get('/pages', [PageController::class, 'index'])->name('pages.index');
+    Route::get('/pages/create', [PageController::class, 'create'])->name('pages.create');
+    Route::post('/pages/store', [PageController::class, 'store'])->name('store.pages');
+    Route::get('/pages/{page}/edit', [PageController::class, 'edit'])->name('edit.pages');
+    Route::put('/pages/{page}', [PageController::class, 'update'])->name('update.pages');
+    Route::delete('/pages/{page}', [PageController::class, 'destroy'])->name('destroy.pages');
 
   //routes for product
   Route::get('/products', [ProductController::class, 'index'])->name('view.products');

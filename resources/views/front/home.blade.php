@@ -150,21 +150,33 @@
 					            @endif
                             </a>
                            
-                            <a class="whishlist" href="222"><i class="far fa-heart"></i></a>                            
+                            <a class="whishlist" href="javascript:void(0);" onclick="addToWishList({{$featProd->id}})"><i class="far fa-heart"></i></a>                            
                     
 
                             <div class="product-action">
+                                @if($featProd->track_qty == 'Yes')
+                                @if($featProd->qty > 0)
                                 <a class="btn btn-dark" href="javascript:void(0)" onclick="addToCart({{$featProd->id}})">
                                     <i class="fa fa-shopping-cart"></i> Add To Cart
-                                </a>                            
+                                </a>  
+                                @else
+                                <a class="btn btn-dark" href="javascript:void(0)">
+                                    <i class="fa fa-shopping-cart"></i> Out of stock
+                                </a>
+                                @endif
+                                @else
+                                <a class="btn btn-dark" href="javascript:void(0)" onclick="addToCart({{$featProd->id}})">
+                                    <i class="fa fa-shopping-cart"></i> Add To Cart
+                                </a>
+                                @endif
                             </div>
                         </div>                        
                         <div class="card-body text-center mt-3">
                             <a class="h6 link" href="product.php">{{$featProd->title}}</a>
                             <div class="price mt-2">
-                                <span class="h5"><strong>&#8358;{{$featProd->price}}</strong></span>
+                                <span class="h5"><strong>&#8358;{{number_format($featProd->price, 2)}}</strong></span>
                                 @if($featProd->compare_price > 0)
-                                <span class="h6 text-underline"><del>&#8358;{{$featProd->compare_price }}</del></span>
+                                <span class="h6 text-underline"><del>&#8358;{{number_format($featProd->compare_price, 2) }}</del></span>
                                 @endif
                             </div>
                         </div>                        
@@ -201,12 +213,24 @@
 
                             </a>
                             
-                            <a class="whishlist" href="222"><i class="far fa-heart"></i></a>                            
+                            <a class="whishlist" href="javascript:void(0);" onclick="addToWishList({{$latestProd->id}})"><i class="far fa-heart"></i></a>                            
 
                             <div class="product-action">
+                                @if($latestProd->track_qty == 'Yes')
+                                @if($latestProd->qty > 0)
                                 <a class="btn btn-dark" href="javascript:void(0)" onclick="addToCart({{$latestProd->id}})">
                                     <i class="fa fa-shopping-cart"></i> Add To Cart
-                                </a>                            
+                                </a>
+                                @else
+                                <a class="btn btn-dark" href="javascript:void(0)">
+                                    <i class="fa fa-shopping-cart"></i> Out of stock
+                                </a>
+                                @endif
+                                @else
+                                <a class="btn btn-dark" href="javascript:void(0)" onclick="addToCart({{$latestProd->id}})">
+                                    <i class="fa fa-shopping-cart"></i> Add To Cart
+                                </a>
+                                @endif                           
                             </div>
                         </div>                        
                         <div class="card-body text-center mt-3">
