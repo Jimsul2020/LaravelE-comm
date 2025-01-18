@@ -62,7 +62,7 @@
 			$("button[type=submit]").prop('disabled', true);
 			$.ajax({
 				url: "{{route('admin.updatePassword')}}",
-				type: 'put',
+				type: 'post',
 				data: formData,
 				dataType: 'json',
 				success: function(response) {

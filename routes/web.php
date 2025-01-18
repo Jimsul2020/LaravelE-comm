@@ -54,6 +54,7 @@ Route::post('/update-Cart', [CartController::class, 'updateCart'])->name('front.
 Route::post('/delete-Cart', [CartController::class, 'deleteItem'])->name('front.deleteItem.cart');
 Route::post('/process-checkout', [CartController::class, 'processCheckout'])->name('front.processCheckout');
 Route::post('/order-summary', [CartController::class, 'orderSummary'])->name('front.orderSummary');
+Route::post('/send-contact-mail', [FrontController::class, 'sendContactEmail'])->name('front.sendContactEmail');
 
 //apply coupon
 Route::post('/apply-discount', [CartController::class, 'applyDiscount'])->name('front.applyDiscount');
@@ -186,5 +187,5 @@ Route::group(['prefix' => 'admin'], function () {
 
  //admin change password
  Route::get('change/password',[SettingController::class,'showChangePasswordForm'])->name('admin.changePassword');
- Route::put('update/password',[SettingController::class,'adminUpdatePassword'])->name('admin.updatePassword');
+ Route::post('update/password',[SettingController::class,'adminUpdatePassword'])->name('admin.updatePassword');
 });
