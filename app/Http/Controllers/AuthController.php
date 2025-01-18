@@ -241,8 +241,8 @@ class AuthController extends Controller
             'confirm_password' => 'required',
         ]);
 
+        $user = User::select('id', 'password')->where('id', Auth::user()->id)->first();
         if ($validator->passes()){
-            $user = User::select('id', 'password')->where('id', Auth::user()->id)->first();
             
             if(!Hash::check($request->old_password, $user->password)){
                 session()->flash('error', 'Your old password is incorrect, please try again');
@@ -251,11 +251,14 @@ class AuthController extends Controller
                 ]);
 
             }
-            session()->flash('success', 'Address Updated successfully.');
+            User::where('id', $user->id)->update([
+                'password' => Hash::make($request->new_password)
+            ]);
+            session()->flash('success', 'Password Updated successfully.');
 
             return response()->json([
                 'status' => true,
-                'message' => 'Address Updated successfully.'
+                'message' => 'Password Updated successfully.'
             ]);
 
         }else{

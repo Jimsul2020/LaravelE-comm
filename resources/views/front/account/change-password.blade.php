@@ -42,7 +42,7 @@
                                     <input type="password" name="confirm_password" id="confirm_password" placeholder="Old Password" class="form-control">
                                 </div>
                                 <div class="d-flex">
-                                    <button class="btn btn-dark">Save</button>
+                                    <button type="submit" id="submit" name="submit" class="btn btn-dark">Save</button>
                                 </div>
                             </div>
                         </div>
@@ -57,6 +57,7 @@
 <script>
     $("#updateForm").submit(function(event){
         event.preventDefault();
+        $("#submit").prop('disabled', true);
         $.ajax({
             url: '{{route("account.updatePassword")}}',
             type: 'post',
@@ -64,6 +65,8 @@
             dataType: 'json',
             success: function(response){
                 if (response == true){
+                    $("#submit").prop('disabled', false);
+                    window.location.href= "{{route('account.updatePassword')}}"
                     $("#old_password").removeClass('is-invalid').siblings('p').html('').removeClass('invalid-feedback');
                     $("#new_password").removeClass('is-invalid').siblings('p').html('').removeClass('invalid-feedback');
                     

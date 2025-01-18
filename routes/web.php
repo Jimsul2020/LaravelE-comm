@@ -19,6 +19,7 @@ use App\Http\Controllers\admin\DiscountCodeController;
 use App\Http\Controllers\admin\OrderController;
 use App\Http\Controllers\admin\PageController;
 use App\Http\Controllers\admin\ProductImageController;
+use App\Http\Controllers\admin\SettingController;
 use App\Http\Controllers\ProductSubCategoryController;
 use App\Http\Controllers\admin\TemplateImagesController;
 use App\Http\Controllers\admin\UserController;
@@ -183,4 +184,7 @@ Route::group(['prefix' => 'admin'], function () {
  //sendinvoiceemail
  Route::post('order/send-email{id}',[OrderController::class,'sendInvoiceEmail'])->name('orders.sendInvoiceEmail');
 
+ //admin change password
+ Route::get('change/password',[SettingController::class,'showChangePasswordForm'])->name('admin.changePassword');
+ Route::put('update/password',[SettingController::class,'adminUpdatePassword'])->name('admin.updatePassword');
 });
